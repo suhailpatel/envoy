@@ -4,6 +4,7 @@
 #include <string>
 
 #include "envoy/common/exception.h"
+
 #include "common/common/utility.h"
 
 #include "absl/strings/str_join.h"
@@ -11,10 +12,12 @@
 namespace Envoy {
 namespace Stats {
 
-HistogramStatisticsImpl::HistogramStatisticsImpl(const histogram_t* histogram_ptr, HistogramOptionsPtr options) {
+HistogramStatisticsImpl::HistogramStatisticsImpl(const histogram_t* histogram_ptr,
+                                                 HistogramOptionsPtr options) {
   options_ = std::move(options);
 
-  hist_approx_quantile(histogram_ptr, supportedQuantiles().data(), supportedQuantiles().size(), computed_quantiles_.data());
+  hist_approx_quantile(histogram_ptr, supportedQuantiles().data(), supportedQuantiles().size(),
+                       computed_quantiles_.data());
 
   sample_count_ = hist_sample_count(histogram_ptr);
   sample_sum_ = hist_approx_sum(histogram_ptr);
@@ -27,7 +30,8 @@ std::string HistogramStatisticsImpl::quantileSummary() const {
   std::vector<std::string> summary;
   summary.reserve(supportedQuantiles().size());
   for (size_t i = 0; i < supportedQuantiles().size(); ++i) {
-    summary.push_back(fmt::format("P{}: {}", 100 * supportedQuantiles()[i], computed_quantiles_[i]));
+    summary.push_back(
+        fmt::format("P{}: {}", 100 * supportedQuantiles()[i], computed_quantiles_[i]));
   }
   return absl::StrJoin(summary, ", ");
 }

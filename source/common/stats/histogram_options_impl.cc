@@ -1,6 +1,7 @@
 #include "common/stats/histogram_options_impl.h"
 
 #include "envoy/common/exception.h"
+
 #include "common/common/utility.h"
 
 #include "absl/strings/str_join.h"
@@ -8,10 +9,11 @@
 namespace Envoy {
 namespace Stats {
 
-HistogramOptionsImpl::HistogramOptionsImpl(std::vector<double>& quantiles, std::vector<double>& buckets) {
+HistogramOptionsImpl::HistogramOptionsImpl(std::vector<double>& quantiles,
+                                           std::vector<double>& buckets) {
   if (!quantiles.empty()) {
     for (const auto quantile : quantiles) {
-      if (quantile < 0.0  ||  quantile > 100.0)
+      if (quantile < 0.0 || quantile > 100.0)
         throw EnvoyException(fmt::format("Quantile {} is not valid.", quantile));
     }
     supported_quantiles_ = quantiles;

@@ -21,9 +21,7 @@ namespace Stats {
  */
 class HistogramStatisticsImpl : public HistogramStatistics, NonCopyable {
 public:
-  HistogramStatisticsImpl() {
-    options_ = std::make_unique<HistogramOptionsImpl>();
-  };
+  HistogramStatisticsImpl() { options_ = std::make_unique<HistogramOptionsImpl>(); };
 
   /**
    * HistogramStatisticsImpl object is constructed using the passed in histogram. It'll use the
@@ -33,7 +31,7 @@ public:
    * will not be retained.
    * @param options pointer to a histogram options struct which contains the buckets and quantiles
    * to support.
-  */
+   */
   HistogramStatisticsImpl(const histogram_t* histogram_ptr, HistogramOptionsPtr options);
 
   void refresh(const histogram_t* new_histogram_ptr);
@@ -43,10 +41,14 @@ public:
   std::string bucketSummary() const override;
 
   const std::vector<double>& computedQuantiles() const override { return computed_quantiles_; }
-  const std::vector<double>& supportedQuantiles() const override { return options_->supportedQuantiles(); }
+  const std::vector<double>& supportedQuantiles() const override {
+    return options_->supportedQuantiles();
+  }
 
   const std::vector<double>& computedBuckets() const override { return computed_quantiles_; }
-  const std::vector<double>& supportedBuckets() const override { return options_->supportedBuckets(); }
+  const std::vector<double>& supportedBuckets() const override {
+    return options_->supportedBuckets();
+  }
 
   double sampleCount() const override { return sample_count_; }
   double sampleSum() const override { return sample_sum_; }
