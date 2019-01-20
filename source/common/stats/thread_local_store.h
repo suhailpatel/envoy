@@ -72,7 +72,7 @@ class ParentHistogramImpl : public ParentHistogram, public MetricImpl {
 public:
   ParentHistogramImpl(const std::string& name, Store& parent, TlsScope& tlsScope,
                       std::string&& tag_extracted_name, std::vector<Tag>&& tags,
-                      HistogramOptionsPtr options);
+                      HistogramOptionsPtr& options);
   ~ParentHistogramImpl();
 
   void addTlsHistogram(const TlsHistogramSharedPtr& hist_ptr);
