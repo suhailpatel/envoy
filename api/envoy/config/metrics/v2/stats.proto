@@ -68,6 +68,32 @@ message StatsConfig {
   // as normal. Preventing the instantiation of certain families of stats can improve memory
   // performance for Envoys running especially large configs.
   StatsMatcher stats_matcher = 3;
+
+  // Defines the quantiles which Envoy will compute and emit for histograms.
+  //
+  // If not specified, Envoy will use the following default quantiles:
+  //  0, 25, 50, 75, 95, 99, 99.5, 99.9, 100
+  //
+  // .. note::
+  //
+  //   Percentiles should be between 0 and 100 inclusive. Anything outside
+  //   of this range will be considered invalid
+  repeated double histogram_quantiles = 4;
+
+  // Defines the threshold buckets which Envoy will compute and emit for histograms. These
+  // buckets are used for statistics output in formats such as the Prometheus format which
+  // prefer ingesting counts across a range of sample value thresholds to allow for more
+  // accurate quantile calculation across different instances of Envoy.
+  //
+  // If not specified, Envoy will use the following default buckets:
+  //    0.5, 1, 5, 10, 25, 50, 100, 250, 500, 1000,
+  //    2500, 5000, 10000, 30000, 60000, 300000, 600000,
+  //    1800000, 3600000
+  //
+  // Currently, Envoy uses the same bucket thresholds for timers (in milliseconds) and other
+  // types of histograms such as request/response size (in kilobytes). In the future, this
+  // may be seperated to allow for different bucket thresholds for different types of histograms.
+  repeated double histogram_buckets = 5;
 }
 
 // Configuration for disabling stat instantiation.
