@@ -16,6 +16,7 @@
 #include "common/json/config_schemas.h"
 #include "common/protobuf/protobuf.h"
 #include "common/protobuf/utility.h"
+#include "common/stats/histogram_options_impl.h"
 #include "common/stats/stats_matcher_impl.h"
 #include "common/stats/tag_producer_impl.h"
 
@@ -233,6 +234,25 @@ Utility::createTagProducer(const envoy::config::bootstrap::v2::Bootstrap& bootst
 Stats::StatsMatcherPtr
 Utility::createStatsMatcher(const envoy::config::bootstrap::v2::Bootstrap& bootstrap) {
   return std::make_unique<Stats::StatsMatcherImpl>(bootstrap.stats_config());
+}
+
+Stats::HistogramOptionsPtr
+Utility::createHistogramOptions(const envoy::config::bootstrap::v2::Bootstrap& bootstrap) {
+  const auto config_buckets = bootstrap.stats_config().histogram_buckets();
+  std::vector<double> buckets;
+  buckets.reserve(config_buckets.size());
+  for (const auto item : config_buckets) {
+    buckets.emplace_back(item);
+  }
+
+  const auto config_quantiles = bootstrap.stats_config().histogram_quantiles();
+  std::vector<double> quantiles;
+  quantiles.reserve(config_quantiles.size());
+  for (const auto item : config_quantiles) {
+    quantiles.emplace_back(item);
+  }
+
+  return std::make_unique<Stats::HistogramOptionsImpl>(buckets, quantiles);
 }
 
 void Utility::checkObjNameLength(const std::string& error_prefix, const std::string& name,

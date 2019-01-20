@@ -279,6 +279,14 @@ public:
   static Stats::StatsMatcherPtr
   createStatsMatcher(const envoy::config::bootstrap::v2::Bootstrap& bootstrap);
 
+  /*
+   * Create HistogramOptions instance
+   * @param bootstrap bootstrap proto.
+   * @throws EnvoyException if the specified buckets or quantiles are invalid.
+   */
+  static Stats::HistogramOptionsPtr
+  createHistogramOptions(const envoy::config::bootstrap::v2::Bootstrap& bootstrap);
+
   /**
    * Check user supplied name in RDS/CDS/LDS for sanity.
    * It should be within the configured length limit. Throws on error.

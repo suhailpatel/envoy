@@ -336,6 +336,7 @@ envoy_cc_library(
         "//source/common/protobuf",
         "//source/common/protobuf:utility_lib",
         "//source/common/singleton:const_singleton",
+        "//source/common/stats:histogram_options_lib",
         "//source/common/stats:stats_lib",
         "//source/common/stats:stats_matcher_lib",
         "//source/common/stats:tag_producer_lib",

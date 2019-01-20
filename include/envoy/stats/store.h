@@ -74,6 +74,11 @@ public:
    */
   virtual void setStatsMatcher(StatsMatcherPtr&& stats_matcher) PURE;
 
+  /*
+   * Sets the given options for histograms produced from this store.
+   */
+  virtual void setHistogramOptions(HistogramOptionsPtr&& histogram_options) PURE;
+
   /**
    * Initialize the store for threading. This will be called once after all worker threads have
    * been initialized. At this point the store can initialize itself for multi-threaded operation.

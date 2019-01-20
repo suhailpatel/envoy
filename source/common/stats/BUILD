@@ -23,6 +23,16 @@ envoy_cc_library(
 )
 
 envoy_cc_library(
+    name = "histogram_options_lib",
+    srcs = ["histogram_options_impl.cc"],
+    hdrs = ["histogram_options_impl.h"],
+    deps = [
+        "//include/envoy/stats:stats_interface",
+        "//source/common/common:utility_lib",
+    ],
+)
+
+envoy_cc_library(
     name = "histogram_lib",
     srcs = ["histogram_impl.cc"],
     hdrs = ["histogram_impl.h"],
@@ -30,6 +40,7 @@ envoy_cc_library(
         "libcircllhist",
     ],
     deps = [
+        ":histogram_options_lib",
         ":metric_impl_lib",
         "//source/common/common:assert_lib",
         "//source/common/common:hash_lib",

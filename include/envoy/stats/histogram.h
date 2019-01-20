@@ -119,5 +119,31 @@ public:
 
 typedef std::shared_ptr<ParentHistogram> ParentHistogramSharedPtr;
 
+/**
+ * Contains the options specified to a histogram for maintaining computation
+ * of statistics per histogram. In the future, we might want different values
+ * based on different kinds of histograms (eg: timers may have different
+ * buckets compared to something like payload size histograms).
+ */
+class HistogramOptions {
+public:
+  virtual ~HistogramOptions() {}
+
+  /**
+   * Returns supported buckets. Each value is the upper bound of the bucket
+   * with 0 as the implicit lower bound. For timers, these bucket thresholds
+   * are in milliseconds but the thresholds are applicable to all types of data.
+   */
+  virtual const std::vector<double>& supportedBuckets() const PURE;
+
+  /**
+   * Returns supported quantiles. Quantiles are specified between 0 and 100
+   * inclusive
+   */
+  virtual const std::vector<double>& supportedQuantiles() const PURE;
+};
+
+typedef std::unique_ptr<const HistogramOptions> HistogramOptionsPtr;
+
 } // namespace Stats
 } // namespace Envoy

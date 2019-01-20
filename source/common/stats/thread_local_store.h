@@ -71,7 +71,8 @@ class TlsScope;
 class ParentHistogramImpl : public ParentHistogram, public MetricImpl {
 public:
   ParentHistogramImpl(const std::string& name, Store& parent, TlsScope& tlsScope,
-                      std::string&& tag_extracted_name, std::vector<Tag>&& tags);
+                      std::string&& tag_extracted_name, std::vector<Tag>&& tags,
+                      HistogramOptionsPtr options);
   ~ParentHistogramImpl();
 
   void addTlsHistogram(const TlsHistogramSharedPtr& hist_ptr);
@@ -160,6 +161,9 @@ public:
     tag_producer_ = std::move(tag_producer);
   }
   void setStatsMatcher(StatsMatcherPtr&& stats_matcher) override;
+  void setHistogramOptions(HistogramOptionsPtr&& histogram_options) override {
+    histogram_options_ = std::move(histogram_options);
+  };
   void initializeThreading(Event::Dispatcher& main_thread_dispatcher,
                            ThreadLocal::Instance& tls) override;
   void shutdownThreading() override;
@@ -267,6 +271,7 @@ private:
   std::list<std::reference_wrapper<Sink>> timer_sinks_;
   TagProducerPtr tag_producer_;
   StatsMatcherPtr stats_matcher_;
+  HistogramOptionsPtr histogram_options_;
   std::atomic<bool> shutting_down_{};
   std::atomic<bool> merge_in_progress_{};
   Counter& num_last_resort_stats_;

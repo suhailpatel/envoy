@@ -8,6 +8,7 @@
 #include "envoy/stats/store.h"
 
 #include "common/common/non_copyable.h"
+#include "common/stats/histogram_options_impl.h"
 #include "common/stats/metric_impl.h"
 
 #include "circllhist.h"
@@ -20,27 +21,39 @@ namespace Stats {
  */
 class HistogramStatisticsImpl : public HistogramStatistics, NonCopyable {
 public:
-  HistogramStatisticsImpl() : computed_quantiles_(supportedQuantiles().size(), 0.0) {}
+  HistogramStatisticsImpl() {
+    options_ = std::make_unique<HistogramOptionsImpl>();
+  };
+
   /**
-   * HistogramStatisticsImpl object is constructed using the passed in histogram.
+   * HistogramStatisticsImpl object is constructed using the passed in histogram. It'll use the
+   * specified quantiles and buckets to compute the quantiles and sample buckets for the histogram
+   * provided
    * @param histogram_ptr pointer to the histogram for which stats will be calculated. This pointer
    * will not be retained.
-   */
-  HistogramStatisticsImpl(const histogram_t* histogram_ptr);
+   * @param options pointer to a histogram options struct which contains the buckets and quantiles
+   * to support.
+  */
+  HistogramStatisticsImpl(const histogram_t* histogram_ptr, HistogramOptionsPtr options);
 
   void refresh(const histogram_t* new_histogram_ptr);
 
   // HistogramStatistics
   std::string quantileSummary() const override;
   std::string bucketSummary() const override;
-  const std::vector<double>& supportedQuantiles() const override;
+
   const std::vector<double>& computedQuantiles() const override { return computed_quantiles_; }
-  const std::vector<double>& supportedBuckets() const override;
-  const std::vector<double>& computedBuckets() const override { return computed_buckets_; }
+  const std::vector<double>& supportedQuantiles() const override { return options_->supportedQuantiles(); }
+
+  const std::vector<double>& computedBuckets() const override { return computed_quantiles_; }
+  const std::vector<double>& supportedBuckets() const override { return options_->supportedBuckets(); }
+
   double sampleCount() const override { return sample_count_; }
   double sampleSum() const override { return sample_sum_; }
 
 private:
+  HistogramOptionsPtr options_;
+
   std::vector<double> computed_quantiles_;
   std::vector<double> computed_buckets_;
   double sample_count_;

@@ -72,6 +72,7 @@ void ValidationInstance::initialize(Options& options,
   InstanceUtil::loadBootstrapConfig(bootstrap, options);
 
   Config::Utility::createTagProducer(bootstrap);
+  Config::Utility::createHistogramOptions(bootstrap);
 
   bootstrap.mutable_node()->set_build_version(VersionInfo::version());
 
